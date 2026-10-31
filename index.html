@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>اختبار صح أو خطأ – حياة النبات</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e8f5e9;--card:#fff;--tx:#1b3a20;--mu:#4d6b52;--pr:#2e9e4f;--pd:#1b6b34;--ok:#2e9e4f;--no:#d9442f;--bd:#c5e1c8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1f14;--card:#183024;--tx:#e8f5e9;--mu:#a5c7aa;--bd:#2c5239}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font-family:Cairo,Tahoma,Arial,sans-serif;font-size:20px;line-height:1.7;min-height:100vh}
+#app{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:30px;font-weight:900;margin:8px 0;text-align:center}
+.hero{text-align:center;font-size:64px;animation:sway 3s ease-in-out infinite}
+@keyframes sway{50%{transform:rotate(8deg) scale(1.08)}}
+.sub{text-align:center;color:var(--mu);margin:0 0 16px}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:24px;padding:20px;margin:12px 0;box-shadow:0 6px 18px rgba(30,100,50,.12)}
+.lbl{font-weight:900;font-size:22px;margin:0 0 10px}
+.modes{display:grid;gap:10px}
+.mode{font:inherit;font-size:21px;font-weight:700;text-align:right;color:var(--tx);background:var(--bg);border:3px solid var(--bd);border-radius:18px;padding:12px 16px;cursor:pointer;transition:.2s}
+.mode small{display:block;font-weight:500;font-size:17px;color:var(--mu)}
+.mode.on{border-color:var(--pr);background:var(--pr);color:#fff;transform:scale(1.02)}
+.mode.on small{color:#e8f5e9}
+input[type=range]{width:100%;height:40px;accent-color:var(--pr)}
+.cnt{text-align:center;font-size:40px;font-weight:900;color:var(--pr)}
+.btn{display:block;width:100%;font:inherit;font-size:24px;font-weight:900;color:#fff;background:var(--pr);border:0;border-radius:20px;padding:16px;cursor:pointer;box-shadow:0 5px 0 var(--pd);transition:.15s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--pd)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;font-size:18px}
+.pill{background:var(--card);border:2px solid var(--bd);border-radius:999px;padding:2px 12px}
+.bar{height:16px;background:var(--bd);border-radius:99px;overflow:hidden;margin:10px 0}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7ed957,#2e9e4f);border-radius:99px;transition:width .5s}
+.q{font-size:25px;font-weight:700;min-height:130px;display:flex;align-items:center}
+.qn{color:var(--mu);font-size:17px;font-weight:700}
+.ans{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.ans button{font:inherit;font-size:28px;font-weight:900;color:#fff;border:0;border-radius:20px;padding:18px 6px;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.25)}
+.ans button:active{transform:translateY(4px)}
+.t{background:var(--ok)}.f{background:var(--no)}
+.ans button:disabled{opacity:.45;cursor:default}
+.fb{border-radius:18px;padding:14px;margin-top:12px;font-weight:700;display:none}
+.fb.g{display:block;background:#d6f2dc;color:#14502a;border:2px solid var(--ok)}
+.fb.b{display:block;background:#fde0db;color:#7a1f12;border:2px solid var(--no)}
+.fb small{display:block;font-weight:500;font-size:17px;margin-top:4px}
+.shake{animation:shake .5s}
+@keyframes shake{20%,60%{transform:translateX(-12px)}40%,80%{transform:translateX(12px)}}
+.pop{animation:pop .45s}
+@keyframes pop{50%{transform:scale(1.04);border-color:var(--ok)}}
+.slide{animation:slide .4s}
+@keyframes slide{from{opacity:0;transform:translateX(-40px)}}
+.big{text-align:center;font-size:72px;margin:0}
+.score{text-align:center;font-size:48px;font-weight:900;color:var(--pr);margin:0}
+.msg{text-align:center;font-weight:700;font-size:23px}
+.row{display:flex;gap:10px}
+.sec{background:var(--card);color:var(--tx);border:2px solid var(--bd);box-shadow:none}
+.mute{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:10px;font-size:26px;background:var(--card);border:2px solid var(--bd);border-radius:50%;width:48px;height:48px;cursor:pointer;z-index:5}
+#fx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9}
+#fx span{position:absolute;top:-50px;font-size:30px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.hide{display:none}
+</style>
+</head>
+<body>
+<button class="mute" id="mu" aria-label="الصوت">🔊</button>
+<div id="fx"></div>
+<div id="app">
+
+<div id="s1">
+ <div class="hero">🌱</div>
+ <h1>اختبار حياة النبات</h1>
+ <p class="sub">العلوم – الصف الثامن – الوحدة الأولى</p>
+ <div class="card"><p class="lbl">اختر مستوى التحدي</p><div class="modes" id="modes"></div></div>
+ <div class="card"><p class="lbl">عدد الأسئلة</p><div class="cnt" id="cn">20</div>
+  <input type="range" id="rg" min="10" max="40" value="20"></div>
+ <button class="btn" id="go">ابدأ الاختبار 🚀</button>
+</div>
+
+<div id="s2" class="hide">
+ <div class="top"><span class="pill" id="sc">✅ 0</span><span class="pill" id="er"></span></div>
+ <div class="bar"><i id="pb"></i></div>
+ <div class="card" id="qc">
+  <div class="qn" id="qn"></div>
+  <div class="q" id="qt"></div>
+  <div class="ans"><button class="t" id="bt">صح ✔</button><button class="f" id="bf">خطأ ✘</button></div>
+  <div class="fb" id="fb"></div>
+ </div>
+ <button class="btn hide" id="nx">التالي ◀</button>
+</div>
+
+<div id="s3" class="hide">
+ <div class="card">
+  <p class="big" id="rs"></p>
+  <p class="score" id="rn"></p>
+  <p class="msg" id="rm"></p>
+  <p class="sub" id="rd"></p>
+ </div>
+ <div class="row"><button class="btn" id="again">أعد المحاولة</button><button class="btn sec" id="home">القائمة</button></div>
+</div>
+</div>
+
+<script>
+// [نص السؤال, الجواب(1 صح/0 خطأ), الصفحة, التصحيح]
+const Q=[
+["المقر الرئيسي لامتصاص الماء والأملاح المعدنية من التربة هو منطقة الأوبار الماصة في الجذر.",1,"6"],
+["تتكون الوبرة الماصة من استطالة إحدى خلايا قشرة الجذر.",0,"6","تتكون من استطالة إحدى خلايا بشرة الجذر."],
+["تتميز الوبرة الماصة بجدارها الرقيق وفجوتها العصارية الكبيرة.",1,"6"],
+["يُوصف الغشاء الهيولي للوبرة الماصة بأنه غشاء غير نفود كلياً.",0,"6","غشاؤها الهيولي نصف نفود."],
+["ينتقل الماء من التربة إلى الوبرة الماصة بظاهرة الانتشار.",0,"5","ينتقل بظاهرة الحلول (الأسموزية)."],
+["تعني ظاهرة الحلول (الأسموزية) انتقال الماء من وسط نسبة الماء فيه مرتفعة إلى وسط نسبة الماء فيه أقل.",1,"5"],
+["تكون نسبة الماء في محلول التربة أقل منها داخل الفجوة العصارية للوبرة الماصة في الحالات الطبيعية.",0,"5","تكون نسبة الماء في محلول التربة مرتفعة (أعلى)، بينما تكون داخل الوبرة أقل."],
+["يستمر انتقال الماء بظاهرة الحلول من خلية إلى أخرى في قشرة الجذر حتى يصل إلى الأوعية الخشبية.",1,"5"],
+["أول من لاحظ ظاهرة الحلول هو العالم نوليه (Nollet) باستخدام مثانة حيوان ملئت بالكحول.",1,"6"],
+["عند وضع مثانة حيوان ملئت بالكحول في الماء، فإنها تنكمش في البداية ثم تنتفخ.",0,"6","انتفخت في البداية ثم انكمشت عند إعادة التجربة بطريقة معكوسة."],
+["تُستخدم مادة اليود ككاشف للكشف عن وجود السكريات الأحادية.",0,"6","يُستخدم للكشف عن النشاء (متعدد السكر)."],
+["يظهر اللون الأزرق الداكن عند إضافة محلول اليود إلى مادة تحتوي على النشاء.",1,"6"],
+["غشاء كيس السلوفان يماثل الغشاء الخلوي للنبات من حيث النفوذية النصفية.",1,"6"],
+["تنتقل بعض الأملاح المعدنية المنحلة بالماء من التربة إلى الوبرة الماصة بطريقة الانتشار.",1,"7"],
+["تعني عملية الانتشار انتقال المادة من وسط تركيزها فيه منخفض إلى وسط تركيزها فيه مرتفع.",0,"7","انتقال المادة من وسط تركيزها فيه مرتفع إلى وسط تركيزها فيه منخفض."],
+["يتم النقل الفعال للمواد في النبات من الوسط الأقل تركيزاً إلى الوسط الأعلى تركيزاً دون صرف طاقة.",0,"7","يتم من الوسط الأقل تركيزاً إلى الأعلى تركيزاً بصرف طاقة."],
+["يسمى المحلول الممتص من التربة والمكون من الماء والأملاح المعدنية بالنسغ الكامل.",0,"7","يسمى النسغ الناقص."],
+["تنتقل المياه والأملاح المعدنية داخل الجذر باتجاه الأوعية اللحائية أولاً ثم الخشبية.",0,"7","تنتقل إلى الأوعية الخشبية في الجذر."],
+["يُسمى الضغط المطبق من الجذر والذي يدفع النسغ الناقص للصعود بالأوعية الخشبية بالضغط الجذري.",1,"7"],
+["عند قطع ساق نبات مزروع في أصيص فوق سطح التربة يلاحظ خروج الماء من مكان القطع.",1,"7"],
+["يتوقف امتصاص النبات للماء عندما تزداد قوة احتفاظ التربة بالماء.",1,"9"],
+["تزداد قدرة الجذر على امتصاص الماء والأملاح عند انخفاض درجة حرارة التربة إلى مستويات متدنية جداً.",0,"9","يتوقف أو يقل الامتصاص لأن انخفاض الحرارة يقلل نشاط الخلايا ونفوذيتها."],
+["تلجأ بعض النباتات في المناطق الباردة إلى إسقاط أوراقها للتقليل من عملية النتح.",1,"9"],
+["تؤدي قلة تهوية التربة الطينية شديدة التماسك إلى ضعف نمو جذر النبات.",1,"9"],
+["تفرط النباتات في امتصاص الماء عند زيادة نسبة الأملاح في التربة بدرجة عالية جداً.",0,"9","يقل الامتصاص أو يتوقف وتصاب خلايا الجذر بالجفاف نتيجة الحلول المعاكس."],
+["تمتلك النباتات المائية المغمرة أوباراً ماصة كثيفة جداً ومجموعاً جذرياً ضخماً.",0,"9","لا تملك أوباراً ماصة لأن كامل سطحها مغمور بالماء."],
+["الأوعية الخشبية هي قنوات ناقلة تعمل على نقل النسغ الناقص من الجذر باتجاه الساق والأوراق.",1,"7"],
+["يتكون النسغ الناقص من مواد عضوية معقدة يتم تصنيعها في الجذر.",0,"7","يتكون من الماء والأملاح المعدنية فقط الممتصة من التربة."],
+["تضمن تهوية التربة توفير الأوكسجين اللازم لتنفس خلايا الجذر وإنجاز عمليات الامتصاص.",1,"9"],
+["عند تماثل نسبة الماء بين التربة والوبرة الماصة يزداد النقل بظاهرة الحلول بشكل كبير.",0,"5","يتوقف انتقال الماء بالحلول."],
+["تُعرف الأوعية الخشبية بالرمز أو الاسم العلمي Xylem Vessels.",1,"7"],
+["يساهم الضغط الجذري في رفع النسغ الناقص باتجاه الأعلى بعكس اتجاه الجاذبية الأرضية.",1,"7"],
+["تسمى ظاهرة الحلول باللغة الإنكليزية بـ Osmosis.",1,"5"],
+["تُعد النباتات الخضراء كائنات غير ذاتية التغذية لأنها تعتمد على الجذور لامتصاص السكر.",0,"11 و13","النباتات الخضراء كائنات ذاتية التغذية تصنع غذاءها بنفسها بالتركيب الضوئي."],
+["تجري عملية التركيب الضوئي في الأجزاء الخضراء من النبات لاحتوائها على اليخضور.",1,"11"],
+["المادة المسؤولة عن امتصاص الطاقة الضوئية في ورقة النبات هي الصانعة البيضاء.",0,"11 و13","المادة المسؤولة هي اليخضور (الكلوروفيل) الموجود في الصانعات الخضراء."],
+["تحتاج عملية التركيب الضوئي إلى الضوء واليخضور وغاز ثنائي أكسيد الكربون والماء.",1,"13"],
+["النواتج الرئيسية لعملية التركيب الضوئي هي غاز ثنائي أكسيد الكربون والماء.",0,"13","النواتج هي غاز الأوكسجين ومواد عضوية (سكر العنب)."],
+["يطلق النبات الأخضر غاز الأوكسجين أثناء تعرضه للضوء.",1,"12 و13"],
+["يُختزن سكر العنب الناتج عن التركيب الضوئي في النبات على شكل نشاء.",1,"13"],
+["عند إضافة ماء اليود لورقة معرّضة كلياً للضوء (بعد إزالة اليخضور)، تتلون باللون الأزرق البنفسجي.",1,"12"],
+["تتلون الورقة المعزولة عن غاز ثنائي أكسيد الكربون باللون الأزرق البنفسجي عند الكشف عن النشاء بماء اليود.",0,"12","لا تتلون باللون الأزرق لعدم تشكل النشاء بغياب CO₂."],
+["يتلون الجزء المغطى بشريط أسود من الورقة باللون الأزرق البنفسجي بعد إضافة ماء اليود.",0,"12","لا يتلون باللون الأزرق البنفسجي لعدم حدوث التركيب الضوئي بغياب الضوء."],
+["في الورقة المبقعة، تتلون الأجزاء الخضراء فقط باللون الأزرق البنفسجي بوجود ماء اليود.",1,"12"],
+["يؤدي تعريض نبات الإيلوديا المائي للضوء إلى انطلاق فقاعات من غاز ثنائي أكسيد الكربون.",0,"12 و13","تنطلق فقاعات من غاز الأوكسجين (O₂)."],
+["الغاز المنطلق من نبات الإيلوديا المعرض للضوء يساعد على توهج عود ثقاب مشتعل.",1,"12"],
+["تحول عملية التركيب الضوئي الطاقة الضوئية إلى طاقة كيميائية تختزن في المواد العضوية.",1,"13"],
+["المعادلة اللفظية للتركيب الضوئي هي: ماء + غاز ثنائي أكسيد الكربون (بوجود الضوء واليخضور) ← سكر العنب + غاز الأوكسجين.",1,"13"],
+["يُسمى المحلول الناتج عن عملية التركيب الضوئي والمكون من السكريات والماء بالأوعية الخشبية.",0,"15","يُسمى النسغ الكامل وينقل عبر الأوعية اللحائية (الغربالية)."],
+["تُنقل المواد العضوية والسكريات (النسغ الكامل) بوساطة الأوعية اللحائية (الغربالية).",1,"15"],
+["عند تقشير حلقة من ساق النبات تشمل القشرة والأوعية الغربالية، يتشكل انتفاخ غني بالمواد الغذائية تحت منطقة التقشير.",0,"14","يتشكل الانتفاخ فوق منطقة التقشير لتجمع النسغ الكامل القادم من الأوراق."],
+["يؤدي قطع الأوعية الغربالية أثناء التقشير الحلقي لساق النبات إلى تباطؤ في نمو الجذر.",1,"14"],
+["ينقل اللحاء (الأوعية الغربالية) النسغ الكامل من أماكن تصنيعه في الأوراق إلى كافة أجزاء النبات.",1,"14 و15"],
+["يُخزن النسغ الكامل في جذور نبات الجزر وساق قصب السكر وثمار التفاح.",1,"15"],
+["تُعرف الأوعية اللحائية الناقلة للنسغ الكامل بالأوعية الغربالية (Sieve Tubes).",1,"14 و15"],
+["تسهم الزراعة المحمية (البيوت البلاستيكية) في ضبط العوامل البيئية لزيادة كفاءة التركيب الضوئي ونمو المزروعات.",1,"17"],
+["يتكون النسغ الكامل من النسغ الناقص والسكريات الناتجة عن عملية التركيب الضوئي.",1,"15"],
+["تُسمى مادة اليخضور باللغة الإنكليزية بالكلوروفيل (Chlorophyll).",1,"13"],
+["تتوقف عملية التركيب الضوئي وتشكيل النشاء عند غياب غاز ثنائي أكسيد الكربون.",1,"12 و13"],
+["يمكن استخلاص اليخضور من أوراق النبات بتسخينها في الكحول النازل.",1,"11"],
+["لا تشارك الجذور مباشرة في التقاط الطاقة الضوئية لعدم احتوائها على اليخضور والصانعات الخضراء.",1,"11 و13"],
+["ينخفض كمية الماء في أنبوب حاوٍ لنبات مائي معرض للضوء بدرجة أكبر من الأنبوب المعزول عن الضوء.",1,"12"],
+["يعتبر غاز ثنائي أكسيد الكربون ناتجاً ثانوياً ينطلق أثناء عملية التركيب الضوئي.",0,"13","غاز ثنائي أكسيد الكربون مادة أولية متفاعلة، بينما الأوكسجين هو الناتج الثانوي."],
+["يتسبب غياب اليخضور في الأجزاء غير الخضراء للورقة المبقعة بعدم قدرتها على تصنيع النشاء.",1,"12"],
+["المواد العضوية التي يصنعها النبات الأخضر تشمل سكر العنب الذي يتحول إلى نشاء مخزن.",1,"13"],
+["ينتقل النسغ الكامل في الأوعية الغربالية باتجاه واحد فقط من الأسفل إلى الأعلى.",0,"14 و15","ينقل النسغ الكامل في كافة الاتجاهات لتغذية كافة أعضاء النبات."],
+["تقوم النباتات الخضراء بعملية التنفس في الظلام فقط وتتوقف عنها في الضوء.",0,"20 و28","عملية التنفس عملية مستمرة ليلاً ونهاراً."],
+["يستهلك النبات غاز الأوكسجين ويطرح غاز ثنائي أكسيد الكربون أثناء عملية التنفس.",1,"20"],
+["يُستخدم رائق الكلس (هيدروكسيد الكالسيوم) للكشف عن غاز الأوكسجين.",0,"19 و20","يُستخدم للكشف عن غاز ثنائي أكسيد الكربون (CO₂)."],
+["يتعكر رائق الكلس عند تفاعله مع غاز ثنائي أكسيد الكربون.",1,"19 و20"],
+["يرافق عملية التنفس لدى البذور المنتشة انطلاق طاقة حرارية تؤدي لارتفاع الحرارة.",1,"21"],
+["عند وضع بذور فول منتشة في وعاء مغلق مع رائق الكلس، يتعكر رائق الكلس ويرتفع مستواه داخل الوعاء.",1,"20 و21"],
+["تقتصر عملية التنفس لدى النبات على الأجزاء الخضراء كالشرائط الورقية فقط.",0,"21 و28","تشمل كافة الخلايا والأجزاء الحية كالبذور المنتشة والجذور والأعضاء غير الخضراء."],
+["تُعرف عملية طرح الماء الزائد على شكل بخار عبر مسامات الأوراق بالنتح (Transpiration).",1,"25"],
+["الفتحات التي يتم عبرها النتح في أوراق النبات تسمى المسام (Stomata).",1,"25"],
+["تفتح المسام العادية في الظلام وتغلق في الضوء لدى معظم النباتات.",0,"25","تفتح في الضوء وتغلق في الظلام."],
+["تقع معظم المسام بكثرة على السطح السفلي لورقة النبات.",1,"25"],
+["تحاط الفتحة المسامية بخليتين حارستين تحتويان على صانعات خضراء.",1,"24 و25"],
+["يُعرف خروج الماء على شكل قطرات سائلة من حواف الأوراق في الصباح الباكر بالإدماع (Guttation).",1,"26"],
+["يتم الإدماع عبر فتحات المسام العادية الموجودة على وجهي الورقة.",0,"26","يتم عبر فتحات خاصة تسمى المسامات المائية تقع على حواف الأوراق."],
+["تكون المسامات المائية المسؤولة عن الإدماع مفتوحة دائماً.",1,"26"],
+["يحدث الإدماع في أوقات الظهيرة عند ارتفاع درجات الحرارة وانخفاض الرطوبة.",0,"26","يحدث في الصباح الباكر والليل عند ارتفاع رطوبة الجو والضغط الجذري."],
+["يساعد تساقط الأوراق النبات على التخلص من جزء كبير من المواد السامة والأملاح الزائدة والزيوت الطيارة.",1,"26"],
+["تؤدي الطبقة الشمعية (الكوتين) المغطية للبشرة في نباتات كالملفوف والنخيل إلى زيادة معدل النتح.",0,"27","تؤدي إلى تقليل (خفض) معدل النتح لأن الكوتين طبقة شمعية عازلة."],
+["تحول أوراق النباتات الصحراوية إلى أشواك يقلل من المساحة المعرضة للتبخر وبالتالي يقلل النتح.",1,"27"],
+["ارتفاع معدل الرطوبة في التربة تؤدي إلى خفض معدل النتح لدى النبات.",0,"27","ارتفاع رطوبة التربة يؤدي إلى زيادة معدل الامتصاص وبالتالي زيادة النتح."],
+["التفاف أوراق بعض النباتات على نفسها في الظروف الحارة يساعد على تقليل النتح.",1,"27"],
+["يولد النتح قوة سحب تساعد على صعود النسغ الناقص من الجذر إلى الأعلى.",1,"29"],
+["يسهم النتح في تبريد النبات وحمايته من ارتفاع درجات الحرارة الشديدة.",1,"29"],
+["يُنصح بوضع كميات كبيرة من النباتات الخضراء في غرفة النوم المغلقة ليلاً لتحسين كمية الأوكسجين.",0,"28","يُنصح بعدم وضعها لأنها تتنفس ليلاً فتستهلك أكسجين الغرفة وتطرح ثنائي أكسيد الكربون."],
+["يسهم الغطاء النباتي والأشجار في تلطيف الجو وزيادة رطوبته من خلال عملية النتح.",1,"21 و23 و29"],
+["غاز ثنائي أكسيد الكربون هو الغاز الناتج عن عملية التنفس لدى النبات والحيوان.",1,"20"],
+["يتم التبادل الغازي التنفسي لدى النبات عبر المسامات الموجودة على الأوراق والأغصان الفتية.",1,"25 و27"],
+["عملية النتح تتم فقط أثناء ساعات الليل وتتوقف نهاراً.",0,"25 و27","يزداد النتح في وجود الضوء والحرارة نهاراً بتفتح المسام."],
+["المسامات المائية تقع على حواف الأوراق ولا تحاط بخلايا حارسة تحكم إغلاقها.",1,"26"],
+["يؤدي انخفاض رطوبة التربة الشديد إلى زيادة قوة سحب النتح للامتصاص دون ذبول الورقة.",0,"27","انخفاض رطوبة التربة الشديد يسبب ذبول ورقة النبات وانكماشها لفقدان الماء."],
+["صيغة رائق الكلس الكيميائية هي Ca(OH)₂.",1,"19"],
+["يتطابق مفهوم النتح تماماً مع مفهوم الإدماع من حيث حالة الماء المطروح وآلية الخروج.",0,"25 و26","النتح يطرح الماء كبخار عبر المسام العادية، بينما الإدماع يطرحه كسائل عبر المسامات المائية."],
+["البذور المنتشة لا تتنفس لأنها لا تحتوي على أوراق خضراء.",0,"21","البذور المنتشة تتنفس بفاعلية عالية وتستهلك الأوكسجين وتطرح ثنائي أكسيد الكربون."],
+["تساعد زراعة الأشجار في المدن على تنقية الهواء من غاز ثنائي أكسيد الكربون وتزويده بالأوكسجين.",1,"21"]
+];
+
+const M={easy:["🌿 سهل","يكمل معك حتى النهاية",null],mid:["🌱 متوسط","25% أخطاء ثم ينتهي الاختبار",.25],hard:["🔥 صعب","10% أخطاء ثم ينتهي الاختبار",.1],xh:["💎 صعب جداً","5% أخطاء ثم ينتهي الاختبار",.05]};
+const $=i=>document.getElementById(i);
+let mode="easy",cnt=20,L=[],i=0,ok=0,bad=0,allowed=Infinity,lock=false,mute=false,AC=null,over=false;
+const lim=(p,n)=>p==null?Infinity:Math.floor(n*p+1e-9);
+
+function drawModes(){
+ $("modes").innerHTML="";
+ for(const k in M){
+  const a=lim(M[k][2],cnt),b=document.createElement("button");
+  b.className="mode"+(k==mode?" on":"");
+  const t=a==Infinity?"يكمل حتى النهاية ثم تظهر النتيجة":a==0?"لا يُسمح بأي خطأ، ينتهي عند أول غلطة":"يُسمح بـ "+a+(a<11?" أخطاء":" خطأً")+" ثم ينتهي الاختبار";
+  b.innerHTML=M[k][0]+"<small>"+t+"</small>";
+  b.onclick=()=>{mode=k;beep("tap");drawModes()};
+  $("modes").appendChild(b);
+ }
+}
+$("rg").oninput=e=>{cnt=+e.target.value;$("cn").textContent=cnt;drawModes()};
+$("mu").onclick=()=>{mute=!mute;$("mu").textContent=mute?"🔇":"🔊"};
+
+function tone(f,t,d,ty,v){
+ if(mute)return;
+ AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+ const o=AC.createOscillator(),g=AC.createGain(),s=AC.currentTime+t;
+ o.type=ty||"sine";o.frequency.value=f;
+ g.gain.setValueAtTime(v||.2,s);g.gain.exponentialRampToValueAtTime(.001,s+d);
+ o.connect(g);g.connect(AC.destination);o.start(s);o.stop(s+d);
+}
+function beep(k){
+ try{
+  if(k=="tap")tone(520,0,.08);
+  if(k=="ok"){tone(523,0,.15);tone(659,.12,.15);tone(784,.24,.3)}
+  if(k=="no"){tone(220,0,.25,"sawtooth",.15);tone(150,.2,.4,"sawtooth",.15)}
+  if(k=="win"){[523,659,784,1047,784,1047].forEach((f,j)=>tone(f,j*.14,.3))}
+  if(k=="lose"){[392,330,262].forEach((f,j)=>tone(f,j*.25,.45,"triangle"))}
+ }catch(e){}
+}
+function rain(arr,n){
+ for(let j=0;j<n;j++){
+  const s=document.createElement("span");
+  s.textContent=arr[j%arr.length];
+  s.style.left=Math.random()*100+"vw";
+  s.style.animationDuration=(1.8+Math.random()*1.8)+"s";
+  s.style.animationDelay=Math.random()*.5+"s";
+  $("fx").appendChild(s);setTimeout(()=>s.remove(),4200);
+ }
+}
+function show(id){["s1","s2","s3"].forEach(x=>$(x).classList.toggle("hide",x!=id));window.scrollTo(0,0)}
+
+function start(){
+ L=Q.slice().sort(()=>Math.random()-.5).slice(0,cnt);
+ i=0;ok=0;bad=0;over=false;allowed=lim(M[mode][2],cnt);
+ show("s2");beep("tap");ask();
+}
+function hud(){
+ $("sc").textContent="✅ "+ok+" من "+(ok+bad);
+ $("er").textContent=allowed==Infinity?"❌ أخطاء: "+bad:"❤️ المتبقي: "+Math.max(allowed-bad+0,0)+" خطأ";
+ $("pb").style.width=(i/cnt*100)+"%";
+}
+function ask(){
+ lock=false;hud();
+ const c=$("qc");c.classList.remove("slide","shake","pop");void c.offsetWidth;c.classList.add("slide");
+ $("qn").textContent="السؤال "+(i+1)+" من "+cnt;
+ $("qt").textContent=L[i][0];
+ $("fb").className="fb";$("nx").classList.add("hide");
+ $("bt").disabled=$("bf").disabled=false;
+}
+function pick(v){
+ if(lock)return;lock=true;
+ const q=L[i],right=(v==q[1]);
+ $("bt").disabled=$("bf").disabled=true;
+ const fb=$("fb");
+ if(right){
+  ok++;beep("ok");rain(["🍃","🌿","🍀","🌱"],14);$("qc").classList.add("pop");
+  fb.className="fb g";fb.innerHTML="أحسنت! إجابة صحيحة 🎉<small>الجواب: "+(q[1]?"صح":"خطأ")+" – صفحة "+q[2]+"</small>";
+ }else{
+  bad++;beep("no");$("qc").classList.add("shake");
+  if(navigator.vibrate)navigator.vibrate(200);
+  fb.className="fb b";
+  fb.innerHTML="إجابة خاطئة 😕<small>الجواب الصحيح: "+(q[1]?"صح":"خطأ")+(q[3]?" – التصحيح: "+q[3]:"")+" (صفحة "+q[2]+")</small>";
+ }
+ i++;
+ over=bad>allowed;
+ const last=i>=cnt||over;
+ hud();
+ $("nx").textContent=last?"عرض النتيجة 🏁":"التالي ◀";
+ $("nx").classList.remove("hide");
+ $("nx").dataset.last=last?1:0;
+ setTimeout(()=>$("nx").scrollIntoView({behavior:"smooth",block:"nearest"}),150);
+}
+$("bt").onclick=()=>pick(1);$("bf").onclick=()=>pick(0);
+$("nx").onclick=()=>{beep("tap");$("nx").dataset.last==1?finish():ask()};
+
+function finish(){
+ show("s3");
+ const ans=ok+bad,pct=Math.round(ok/cnt*100);
+ $("rn").textContent=ok+" / "+cnt;
+ let em,m;
+ if(over){em="😢";m="انتهى الاختبار لأنك تجاوزت عدد الأخطاء المسموح";beep("lose")}
+ else if(pct>=90){em="🏆";m="ممتاز! أنت عبقري النبات";beep("win");rain(["🎉","⭐","🌟","🌿","🎊"],40)}
+ else if(pct>=70){em="🌟";m="جيد جداً! استمر";beep("win");rain(["🎉","⭐","🍃"],25)}
+ else if(pct>=50){em="🌱";m="جيد، راجع الدروس وحاول مجدداً";beep("ok")}
+ else{em="📖";m="تحتاج مراجعة أكثر، لا تستسلم!";beep("lose")}
+ $("rs").textContent=em;$("rm").textContent=m;
+ $("rd").textContent="الإجابات الصحيحة: "+ok+" – الأخطاء: "+bad+" – المجاب عنها: "+ans+" من "+cnt+" ("+M[mode][0].slice(3)+")";
+}
+$("go").onclick=start;
+$("again").onclick=start;
+$("home").onclick=()=>{beep("tap");show("s1")};
+drawModes();
+</script>
+</body>
+</html>
